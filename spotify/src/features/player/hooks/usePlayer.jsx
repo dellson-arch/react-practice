@@ -1,36 +1,53 @@
-import { useEffect, useRef } from "react"
-import { useDispatch, useSelector } from "react-redux"
-import { pause, play } from "../state/PlayerSlice"
+import { useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { pause, play } from "../state/PlayerSlice";
 
-const globalAudio = new Audio()
-export let usePlayer = () =>{
-   const audioRef =  useRef(globalAudio)
-   let dispatch = useDispatch()
+const globalAudio = new Audio();
 
-   let{currentPlayingSong , isPlaying} = useSelector((store)=>store.player)
+export const usePlayer = () => {
+    const audioRef = useRef(globalAudio);
+    const dispatch = useDispatch();
+
+    const { currentPlayingSong, isPlaying } = useSelector(
+        (store) => store.player
+    );
+
+    useEffect(() => {
+        const audio = audioRef.current;
+
+        if (!currentPlayingSong) return;
+
+        // if new song selected
+        if (audio.src !== currentPlayingSong.url) {
+            audio.pause();
+            audio.src = currentPlayingSong.url;
+            audio.load();
+        }
+
+        if (isPlaying) {
+            const playAudio = async () => {
+                try {
+                    await audio.play();
+                } catch (err) {
+                    console.log(err);
+                }
+            };
+            playAudio();
+        } else {
+            audio.pause();
+        }
+    }, [currentPlayingSong, isPlaying]);
+
+    let togglePlayAndPause = () => {
+       console.log("is playing...", isPlaying);
+       if (isPlaying) {
+         dispatch(pause());
+       } else {
+         dispatch(play());
+       }
+     };
    
-   useEffect(()=>{
-      console.log("Hook is active! Current song:", currentPlayingSong);
-      if(!currentPlayingSong)return
-      audioRef.current.src = currentPlayingSong.url
-      audioRef.current.play()
-   },[currentPlayingSong])
-
-   useEffect(()=>{
-      if(!currentPlayingSong)return
-      if(isPlaying){
-         audioRef.current.play()
-      }else{
-         audioRef.current.pause()
-      }
-   },[isPlaying])
-
-   let togglePlayAndPause = () => {
-    if(isPlaying){
-      dispatch(pause())
-    }else{
-      dispatch(play())
-    }
-   }
-    return{togglePlayAndPause}
-}
+     return {
+       togglePlayAndPause,
+     };
+};

@@ -9,6 +9,7 @@ let playerSlice = createSlice({
  reducers : {
    playNewSong : (state , action)=>{
       state.currentPlayingSong = action.payload
+      // console.log(action.payload)
       state.isPlaying = true
    },
    play : (state)=>{

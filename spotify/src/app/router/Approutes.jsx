@@ -10,10 +10,10 @@ import { useEffect } from "react";
 import { storage } from "../../utils/localStorage";
 import { dispatch } from "../store/store";
 import { loginUser, registerUser } from "../../features/auth/state/authSlice";
-
+import { usePlayer } from "../../features/player/hooks/usePlayer";
 
 const Approutes = () => {
-
+usePlayer();
   useEffect(() => {
   const users = storage.get("users");
   if (users) {

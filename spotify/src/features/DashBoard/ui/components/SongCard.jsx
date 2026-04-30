@@ -1,10 +1,11 @@
 import React from "react";
 import { useDashboard } from "../../hooks/useDashboard";
 import { playNewSong } from "../../../player/state/playerSlice";
+import { usePlayer } from "../../../player/hooks/usePlayer";
 
 const SongCard = ({ song }) => {
   let { dispatch } = useDashboard();
-
+  usePlayer()
   return (
     <div className="bg-[#181818] p-4 rounded-xl hover:bg-[#282828] transition cursor-pointer w-64">
       {/* Thumbnail */}
